@@ -1,0 +1,118 @@
+### Uji Endpoint Login Pengguna
+# @name loginUser
+POST http://localhost:5000/api/login
+Content-Type: application/json
+
+{
+  "email": "bagus@gmail.com",
+  "password": "123"
+}
+
+### Uji Endpoint Register Pengguna (Opsional, jika ingin membuat user baru)
+# @name registerUser
+POST http://localhost:5000/api/register
+Content-Type: application/json
+
+{
+  "name": "Bagus Wira",
+  "email": "bagus@gmail.com",
+  "password": "123"
+}
+
+
+### 3. Uji Endpoint Mendapatkan Semua PC Rakitan
+# Ini adalah rute publik, tidak memerlukan token.
+GET http://localhost:5000/api/pcbuilds
+Accept: application/json
+
+### 4. Uji Endpoint Mendapatkan Detail PC Rakitan Berdasarkan ID
+# Ganti :id dengan ID PC Rakitan yang ada di database Anda.
+GET http://localhost:5000/api/pcbuilds/1
+Accept: application/json
+
+### 5. Uji Endpoint Membuat PC Rakitan Baru (Hanya Admin)
+# Membutuhkan token JWT dari user dengan role 'admin'.
+# Pastikan Anda telah login sebagai admin (jalankan request 'loginUser' dengan kredensial admin).
+POST http://localhost:5000/api/pcbuilds
+Content-Type: application/json
+Authorization: Bearer {{loginUser.response.body.token}}
+
+{
+  "name": "PC Rakitan Gaming Extreme DB Lain",
+  "description": "Performa tak tertandingi untuk gamer profesional di DB lain.",
+  "price": 25000000.00,
+  "imageUrl": "https://placehold.co/600x400/0000FF/FFFFFF?text=PC+Gaming+Extreme+DB+Lain",
+  "specs": "CPU: Intel Core i9-14900K, GPU: NVIDIA GeForce RTX 4090, RAM: 64GB DDR5, Storage: 4TB NVMe SSD",
+  "type": "Gaming"
+}
+
+### 6. Uji Endpoint Memperbarui PC Rakitan (Hanya Admin)
+# Ganti :id dengan ID PC Rakitan yang ingin Anda update.
+# Membutuhkan token JWT dari user dengan role 'admin'.
+PUT http://localhost:5000/api/pcbuilds/1
+Content-Type: application/json
+Authorization: Bearer {{loginUser.response.body.token}}
+
+{
+  "name": "PC Rakitan Gaming Extreme DB Lain (Updated)",
+  "description": "Performa tak tertandingi untuk gamer profesional, kini dengan liquid cooling.",
+  "price": 26000000.00,
+  "imageUrl": "https://placehold.co/600x400/FF0000/FFFFFF?text=PC+Gaming+Updated+DB+Lain",
+  "specs": "CPU: Intel Core i9-14900K, GPU: NVIDIA GeForce RTX 4090, RAM: 64GB DDR5, Storage: 4TB NVMe SSD, Cooling: Liquid",
+  "type": "Gaming"
+}
+
+### 7. Uji Endpoint Menghapus PC Rakitan (Hanya Admin)
+# Ganti :id dengan ID PC Rakitan yang ingin Anda hapus.
+# HATI-HATI: Ini akan menghapus data.
+# Membutuhkan token JWT dari user dengan role 'admin'.
+DELETE http://localhost:5000/api/pcbuilds/1
+Authorization: Bearer {{loginUser.response.body.token}}
+
+### 8. Uji Endpoint Mendapatkan Semua Pesanan Pengguna (Membutuhkan Otentikasi)
+# Ini akan menampilkan pesanan yang dibuat oleh user yang login.
+# Membutuhkan token JWT.
+GET http://localhost:5000/api/orders
+Accept: application/json
+Authorization: Bearer {{loginUser.response.body.token}}
+
+### 9. Uji Endpoint Membuat Pesanan Baru (Membutuhkan Otentikasi)
+# Pastikan Anda sudah memiliki beberapa ID PC Rakitan yang ada di database.
+# Ganti pcBuildId dengan ID yang valid dari PcBuilds Anda.
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginUser.response.body.token}}
+
+{
+  "recipientName": "Pembeli A DB Lain",
+  "deliveryAddress": "Jl. Mawar No. 5, Jakarta",
+  "phoneNumber": "08123456789",
+  "totalAmount": 25500000,
+  "items": [
+    {
+      "pcBuildId": 1,
+      "pcBuildName": "PC Rakitan Gaming Extreme DB Lain",
+      "pcBuildImageUrl": "https://placehold.co/600x400/0000FF/FFFFFF?text=PC+Gaming+Extreme+DB+Lain",
+      "pricePerUnit": 25000000,
+      "quantity": 1
+    }
+  ]
+}
+
+### 10. Uji Endpoint Memperbarui Status Pesanan (Membutuhkan Otentikasi)
+# Ganti :id dengan ID pesanan yang ingin Anda update.
+# Membutuhkan token JWT.
+PATCH http://localhost:5000/api/orders/1
+Content-Type: application/json
+Authorization: Bearer {{loginUser.response.body.token}}
+
+{
+  "status": "completed"
+}
+
+### 11. Uji Endpoint Menghapus Pesanan (Membutuhkan Otentikasi)
+# Ganti :id dengan ID pesanan yang ingin Anda hapus.
+# HATI-HATI: Ini akan menghapus data.
+# Membutuhkan token JWT.
+DELETE http://localhost:5000/api/orders/1
+Authorization: Bearer {{loginUser.response.body.token}}
